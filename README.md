@@ -1,1 +1,1 @@
-othello-prolog
+prolog-project
