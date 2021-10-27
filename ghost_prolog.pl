@@ -49,14 +49,13 @@ edge(node(1,20),node(6,20),5,east).
 edge(node(6,8),node(6,14),6,south).
 edge(node(6,14),node(9,14),3,east).
 edge(node(6,14),node(6,20),6,south).
-edge(node(6,20),node(9,20),6,east).
+edge(node(6,20),node(9,20),3,east).
 edge(node(9,5),node(12,11),9,south).
-edge(node(9,11),node(12,11),3,west).
-edge(node(9,11),node(9,14),3,south).
+edge(node(9,11),node(12,11),3,east).
 edge(node(9,11),node(9,14),3,south).
 edge(node(9,14),node(9,17),3,south).
 edge(node(9,17),node(9,20),3,south).
-edge(node(9,17),node(18,20),9,east).
+edge(node(9,17),node(18,17),9,east).
 edge(node(9,20),node(12,20),3,east).
 edge(node(12,11),node(15,11),3,east).
 edge(node(12,20),node(12,23),3,south).
