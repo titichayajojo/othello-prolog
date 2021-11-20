@@ -214,6 +214,8 @@ class Blinky(Ghost):
 
 
 class Pinky(Ghost):
+    def __init__(self, position, game, pac):
+        super().__init__(position,game,pac)
     def find_target(self):
         if self.mode == 'eaten':
             self.target = Vector2(13,11)
@@ -260,6 +262,8 @@ class Inky(Ghost):
 
 
 class Clyde(Ghost):
+    def __init__(self, position, game, pac):
+        super().__init__(position,game,pac)
     def find_target(self):
         if self.mode == 'eaten':
             self.target = Vector2(13,11)
