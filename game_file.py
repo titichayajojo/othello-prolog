@@ -284,60 +284,60 @@ class Game(object):
         filedirect = 'resources/maze.txt'
         try:
             inFile = open(filedirect,'r')
-            self.icon = pygame.image.load('resources/pacman.png')
-            self.pacLeft = [pygame.image.load('PacSprite/pacman 0.png'), pygame.image.load('PacSprite/pacleft1.png'),
-                            pygame.image.load('PacSprite/pacleft2.png')]
+            self.icon = pygame.image.load('resources/app_logo.png')
+            self.pacLeft = [pygame.image.load('resources/sprites/pac/pacman 0.png'), pygame.image.load('resources/sprites/pac/pacleft1.png'),
+                            pygame.image.load('resources/sprites/pac/pacleft2.png')]
 
-            self.pacRight = [pygame.image.load('PacSprite/pacman 0.png'), pygame.image.load('PacSprite/pacright1.png'),
-                             pygame.image.load('PacSprite/pacright2.png')]
+            self.pacRight = [pygame.image.load('resources/sprites/pac/pacman 0.png'), pygame.image.load('resources/sprites/pac/pacright1.png'),
+                             pygame.image.load('resources/sprites/pac/pacright2.png')]
 
-            self.pacUp = [pygame.image.load('PacSprite/pacman 0.png'), pygame.image.load('PacSprite/pacup1.png'),
-                          pygame.image.load('PacSprite/pacup2.png')]
+            self.pacUp = [pygame.image.load('resources/sprites/pac/pacman 0.png'), pygame.image.load('resources/sprites/pac/pacup1.png'),
+                          pygame.image.load('resources/sprites/pac/pacup2.png')]
 
-            self.pacDown = [pygame.image.load('PacSprite/pacman 0.png'), pygame.image.load('PacSprite/pacdown1.png'),
-                            pygame.image.load('PacSprite/pacdown2.png')]
+            self.pacDown = [pygame.image.load('resources/sprites/pac/pacman 0.png'), pygame.image.load('resources/sprites/pac/pacdown1.png'),
+                            pygame.image.load('resources/sprites/pac/pacdown2.png')]
 
-            self.blinkyLeft = [pygame.image.load('Blinky/blinkyleft.png'), pygame.image.load('Blinky/blinkyleft2.png')]
-            self.blinkyRight = [pygame.image.load('Blinky/blinkyright.png'),
-                                pygame.image.load('Blinky/blinkyright2.png')]
-            self.blinkyUp = [pygame.image.load('Blinky/blinkyup.png'), pygame.image.load('Blinky/blinkyup2.png')]
-            self.blinkyDown = [pygame.image.load('Blinky/blinkydown.png'), pygame.image.load('Blinky/blinkydown2.png')]
+            self.blinkyLeft = [pygame.image.load('resources/sprites/blinky/blinkyleft.png'), pygame.image.load('resources/sprites/blinky/blinkyleft2.png')]
+            self.blinkyRight = [pygame.image.load('resources/sprites/blinky/blinkyright.png'),
+                                pygame.image.load('resources/sprites/blinky/blinkyright2.png')]
+            self.blinkyUp = [pygame.image.load('resources/sprites/blinky/blinkyup.png'), pygame.image.load('Blinky/blinkyup2.png')]
+            self.blinkyDown = [pygame.image.load('resources/sprites/blinky/blinkydown.png'), pygame.image.load('resources/sprites/blinky/blinkydown2.png')]
 
-            self.pinkyLeft = [pygame.image.load('Pinky/pinkleft.png'), pygame.image.load('Pinky/pinkleft2.png')]
-            self.pinkyRight = [pygame.image.load('Pinky/pinkyright.png'), pygame.image.load('Pinky/pinkyright2.png')]
-            self.pinkyUp = [pygame.image.load('Pinky/pinkyup.png'), pygame.image.load('Pinky/pinkyup2.png')]
-            self.pinkyDown = [pygame.image.load('Pinky/pinkydown.png'), pygame.image.load('Pinky/pinkydown2.png')]
+            self.pinkyLeft = [pygame.image.load('resources/sprites/pinky/pinkleft.png'), pygame.image.load('resources/sprites/pinky/pinkleft2.png')]
+            self.pinkyRight = [pygame.image.load('resources/sprites/pinky/pinkyright.png'), pygame.image.load('resources/sprites/pinky/pinkyright2.png')]
+            self.pinkyUp = [pygame.image.load('resources/sprites/pinky/pinkyup.png'), pygame.image.load('Pinky/pinkyup2.png')]
+            self.pinkyDown = [pygame.image.load('resources/sprites/pinky/pinkydown.png'), pygame.image.load('resources/sprites/pinky/pinkydown2.png')]
 
-            self.inkyLeft = [pygame.image.load('Inky/inkyleft.png'), pygame.image.load('Inky/inkyleft2.png')]
-            self.inkyRight = [pygame.image.load('Inky/inkyright.png'), pygame.image.load('Inky/inkyright2.png')]
-            self.inkyUp = [pygame.image.load('Inky/inkyup.png'), pygame.image.load('Inky/inkyup2.png')]
-            self.inkyDown = [pygame.image.load('Inky/inkydown.png'), pygame.image.load('Inky/inkydown2.png')]
+            self.inkyLeft = [pygame.image.load('resources/sprites/inky/inkyleft.png'), pygame.image.load('Inky/inkyleft2.png')]
+            self.inkyRight = [pygame.image.load('resources/sprites/inky/inkyright.png'), pygame.image.load('Inky/inkyright2.png')]
+            self.inkyUp = [pygame.image.load('resources/sprites/inky/inkyup.png'), pygame.image.load('Inky/inkyup2.png')]
+            self.inkyDown = [pygame.image.load('resources/sprites/inky/inkydown.png'), pygame.image.load('Inky/inkydown2.png')]
 
-            self.clydeLeft = [pygame.image.load('Clyde/clydeleft.png'), pygame.image.load('Clyde/clydeleft2.png')]
-            self.clydeRight = [pygame.image.load('Clyde/clyderight.png'), pygame.image.load('Clyde/clyderight2.png')]
-            self.clydeUp = [pygame.image.load('Clyde/clydeup.png'), pygame.image.load('Clyde/clydeup2.png')]
-            self.clydeDown = [pygame.image.load('Clyde/clydedown.png'), pygame.image.load('Clyde/clydedown2.png')]
+            self.clydeLeft = [pygame.image.load('resources/sprites/clyde/clydeleft.png'), pygame.image.load('resources/sprites/clyde/clydeleft2.png')]
+            self.clydeRight = [pygame.image.load('resources/sprites/clyde/clyderight.png'), pygame.image.load('resources/sprites/clyde/clyderight2.png')]
+            self.clydeUp = [pygame.image.load('resources/sprites/clyde/clydeup.png'), pygame.image.load('resources/sprites/clyde/clydeup2.png')]
+            self.clydeDown = [pygame.image.load('resources/sprites/clyde/clydedown.png'), pygame.image.load('resources/sprites/clyde/clydedown2.png')]
             
-            self.pacdeath = [pygame.image.load('PacSprite/death1.png'), pygame.image.load('PacSprite/death2.png'),
-                             pygame.image.load('PacSprite/death3.png'), pygame.image.load('PacSprite/death4.png'),
-                             pygame.image.load('PacSprite/death5.png'), pygame.image.load('PacSprite/death6.png'),
-                             pygame.image.load('PacSprite/death7.png'), pygame.image.load('PacSprite/death8.png'),
-                             pygame.image.load('PacSprite/death9.png'), pygame.image.load('PacSprite/death10.png'),
-                             pygame.image.load('PacSprite/death11.png'), pygame.image.load('PacSprite/death11.png'),
-                             pygame.image.load('PacSprite/death11.png')]
+            self.pacdeath = [pygame.image.load('resources/sprites/pac/death1.png'), pygame.image.load('resources/sprites/pac/death2.png'),
+                             pygame.image.load('resources/sprites/pac/death3.png'), pygame.image.load('resources/sprites/pac/death4.png'),
+                             pygame.image.load('resources/sprites/pac/death5.png'), pygame.image.load('resources/sprites/pac/death6.png'),
+                             pygame.image.load('resources/sprites/pac/death7.png'), pygame.image.load('resources/sprites/pac/death8.png'),
+                             pygame.image.load('resources/sprites/pac/death9.png'), pygame.image.load('resources/sprites/pac/death10.png'),
+                             pygame.image.load('resources/sprites/pac/death11.png'), pygame.image.load('resources/sprites/pac/death11.png'),
+                             pygame.image.load('resources/sprites/pac/death11.png')]
 
-            self.frightenSprite = [pygame.image.load('Frighten/frighten.png'),
-                                   pygame.image.load('Frighten/frighten2.png')]
-            self.eatenSprite = pygame.image.load('resources/eaten.png')
-            self.bg = pygame.image.load('resources/maze.png')
-            self.winscene = pygame.image.load('resources/winscene.png')
-            self.losescene = pygame.image.load('resources/losescene.png')
-            self.menuscene = pygame.image.load('resources/menuscene.png')
-            self.eat_sound = pygame.mixer.Sound("Sounds/pacman_chomp.wav")
-            self.beginning_sound = pygame.mixer.Sound("Sounds/pacman_beginning.wav")
-            self.eat_en = pygame.mixer.Sound("Sounds/pacman_eatfruit.wav")
-            self.death_sound = pygame.mixer.Sound("Sounds/pacman_death.wav")
-            self.eat_ghost_sound = pygame.mixer.Sound("Sounds/pacman_eatghost.wav")
+            self.frightenSprite = [pygame.image.load('resources/sprites/frighten/frighten.png'),
+                                   pygame.image.load('resources/sprites/frighten/frighten2.png')]
+            self.eatenSprite = pygame.image.load('resources/sprites/eaten/eaten.png')
+            self.bg = pygame.image.load('resources/maze_background.png')
+            self.winscene = pygame.image.load('resources/gamescenes/winscene.png')
+            self.losescene = pygame.image.load('resources/gamescenes/losescene.png')
+            self.menuscene = pygame.image.load('resources/gamescenes/menuscene.png')
+            self.eat_sound = pygame.mixer.Sound("resources/sounds/pacman_chomp.wav")
+            self.beginning_sound = pygame.mixer.Sound("resources/sounds/pacman_beginning.wav")
+            self.eat_en = pygame.mixer.Sound("resources/sounds/pacman_eatfruit.wav")
+            self.death_sound = pygame.mixer.Sound("resources/sounds/pacman_death.wav")
+            self.eat_ghost_sound = pygame.mixer.Sound("resources/sounds/pacman_eatghost.wav")
 
         except FileNotFoundError:
             raise  CannotOpenFile(FileNotFoundError.filename)
