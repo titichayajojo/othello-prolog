@@ -281,7 +281,7 @@ class Game(object):
 
     ''' load every resources '''
     def load_elements(self):
-        filedirect = 'resources/maze.txt'
+        filedirect = 'resources/maze_data.txt'
         try:
             inFile = open(filedirect,'r')
             self.icon = pygame.image.load('resources/app_logo.png')
@@ -300,18 +300,18 @@ class Game(object):
             self.blinkyLeft = [pygame.image.load('resources/sprites/blinky/blinkyleft.png'), pygame.image.load('resources/sprites/blinky/blinkyleft2.png')]
             self.blinkyRight = [pygame.image.load('resources/sprites/blinky/blinkyright.png'),
                                 pygame.image.load('resources/sprites/blinky/blinkyright2.png')]
-            self.blinkyUp = [pygame.image.load('resources/sprites/blinky/blinkyup.png'), pygame.image.load('Blinky/blinkyup2.png')]
+            self.blinkyUp = [pygame.image.load('resources/sprites/blinky/blinkyup.png'), pygame.image.load('resources/sprites/blinky/blinkyup2.png')]
             self.blinkyDown = [pygame.image.load('resources/sprites/blinky/blinkydown.png'), pygame.image.load('resources/sprites/blinky/blinkydown2.png')]
 
             self.pinkyLeft = [pygame.image.load('resources/sprites/pinky/pinkleft.png'), pygame.image.load('resources/sprites/pinky/pinkleft2.png')]
             self.pinkyRight = [pygame.image.load('resources/sprites/pinky/pinkyright.png'), pygame.image.load('resources/sprites/pinky/pinkyright2.png')]
-            self.pinkyUp = [pygame.image.load('resources/sprites/pinky/pinkyup.png'), pygame.image.load('Pinky/pinkyup2.png')]
+            self.pinkyUp = [pygame.image.load('resources/sprites/pinky/pinkyup.png'), pygame.image.load('resources/sprites/pinky/pinkyup2.png')]
             self.pinkyDown = [pygame.image.load('resources/sprites/pinky/pinkydown.png'), pygame.image.load('resources/sprites/pinky/pinkydown2.png')]
 
-            self.inkyLeft = [pygame.image.load('resources/sprites/inky/inkyleft.png'), pygame.image.load('Inky/inkyleft2.png')]
-            self.inkyRight = [pygame.image.load('resources/sprites/inky/inkyright.png'), pygame.image.load('Inky/inkyright2.png')]
-            self.inkyUp = [pygame.image.load('resources/sprites/inky/inkyup.png'), pygame.image.load('Inky/inkyup2.png')]
-            self.inkyDown = [pygame.image.load('resources/sprites/inky/inkydown.png'), pygame.image.load('Inky/inkydown2.png')]
+            self.inkyLeft = [pygame.image.load('resources/sprites/inky/inkyleft.png'), pygame.image.load('resources/sprites/inky/inkyleft2.png')]
+            self.inkyRight = [pygame.image.load('resources/sprites/inky/inkyright.png'), pygame.image.load('resources/sprites/inky/inkyright2.png')]
+            self.inkyUp = [pygame.image.load('resources/sprites/inky/inkyup.png'), pygame.image.load('resources/sprites/inky/inkyup2.png')]
+            self.inkyDown = [pygame.image.load('resources/sprites/inky/inkydown.png'), pygame.image.load('resources/sprites/inky/inkydown2.png')]
 
             self.clydeLeft = [pygame.image.load('resources/sprites/clyde/clydeleft.png'), pygame.image.load('resources/sprites/clyde/clydeleft2.png')]
             self.clydeRight = [pygame.image.load('resources/sprites/clyde/clyderight.png'), pygame.image.load('resources/sprites/clyde/clyderight2.png')]
@@ -333,11 +333,11 @@ class Game(object):
             self.winscene = pygame.image.load('resources/gamescenes/winscene.png')
             self.losescene = pygame.image.load('resources/gamescenes/losescene.png')
             self.menuscene = pygame.image.load('resources/gamescenes/menuscene.png')
-            self.eat_sound = pygame.mixer.Sound("resources/sounds/pacman_chomp.wav")
-            self.beginning_sound = pygame.mixer.Sound("resources/sounds/pacman_beginning.wav")
-            self.eat_en = pygame.mixer.Sound("resources/sounds/pacman_eatfruit.wav")
-            self.death_sound = pygame.mixer.Sound("resources/sounds/pacman_death.wav")
-            self.eat_ghost_sound = pygame.mixer.Sound("resources/sounds/pacman_eatghost.wav")
+            self.eat_sound = pygame.mixer.Sound("resources/sounds/sound_chomp.wav")
+            self.beginning_sound = pygame.mixer.Sound("resources/sounds/sound_beginning.wav")
+            self.eat_en = pygame.mixer.Sound("resources/sounds/sound_eatfruit.wav")
+            self.death_sound = pygame.mixer.Sound("resources/sounds/sound_death.wav")
+            self.eat_ghost_sound = pygame.mixer.Sound("resources/sounds/sound_eatghost.wav")
 
         except FileNotFoundError:
             raise  CannotOpenFile(FileNotFoundError.filename)
