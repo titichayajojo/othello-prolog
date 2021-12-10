@@ -44,6 +44,7 @@ class Game(object):
             self.ghost_moveCount = 0
             self.pac_turn = 'left'
             self.win = False
+            self.win_streak = 0
             self.start_die = 0
             self.pacdeathFrame = 0
             self.point = 0
@@ -108,9 +109,24 @@ class Game(object):
                             self.redraw_game()
                             if self.pac.life == 0:
                                 self.win = -1
-                        elif self.win == 1 or self.win == -1:
+                        
+                        elif self.win == -1 or self.win_streak == 5:
                             self.scene = 'end'
-                    self.draw_score_life()
+                            if self.win_streak == 5:
+                                self.win = 1
+                            
+                        elif self.win == 1:
+                            self.win_streak += 1
+                            self.scene = 'continue'
+                        self.draw_score_life()
+
+            elif self.scene == 'continue':
+                seconds = (pygame.time.get_ticks() - self.start_ticks) / 1000
+                dying = (pygame.time.get_ticks() - self.start_die) / 1000
+                self.next_level()
+                self.scene = 'playing'
+                self.beginning_sound.play()
+
             elif self.scene == 'end':
                 key = pygame.key.get_pressed()
                 if key[pygame.K_SPACE]:
@@ -426,7 +442,7 @@ class Game(object):
         click = pygame.mouse.get_pressed()
         start_pos = [START_BUT_POS[0] + START_BUT_WIDTH / 2, START_BUT_POS[1] + START_BUT_HEIGHT / 2]
         exit_pos = [EXIT_BUT_POS[0] + EXIT_BUT_WIDTH / 2 + 2, EXIT_BUT_POS[1] + EXIT_BUT_HEIGHT / 2 + 2]
-        self.create_text('by Phurit Warapattanapong', self.window, [360, 635], 8, WHITE, ARC_FONT, True)
+        self.create_text('by JoJo Rit Pun', self.window, [360, 635], 8, WHITE, ARC_FONT, True)
         if START_BUT_POS[0] + START_BUT_WIDTH > mouse[0] > START_BUT_POS[0] and\
                 START_BUT_POS[1] + START_BUT_HEIGHT > mouse[1] > START_BUT_POS[1] :
             pygame.draw.rect(self.window, WHITE,
@@ -472,6 +488,7 @@ class Game(object):
         self.ghost_dec = []
         self.point = 0
         self.win = 0
+        self.win_streak = 0
         self.start_ticks = pygame.time.get_ticks()
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)
@@ -487,3 +504,25 @@ class Game(object):
         for ghost in self.ghostList:
             ghost.mode = 'scatter'
             ghost.start_mode = pygame.time.get_ticks() + 4150
+
+    def next_level(self):
+        self.walls = []
+        self.dots = []
+        self.energ = []
+        self.ghost_en = []
+        self.ghost_dec = []
+        self.win = 0
+        self.start_ticks = pygame.time.get_ticks()
+        self.load_elements()
+        self.pac = Pac_Man(self.pac_start,self)
+        self.blinky = Blinky(self.blinky_start, self, self.pac)
+        self.pinky = Pinky(self.pinky_start, self, self.pac)
+        self.inky = Inky(self.inky_start, self, self.pac, self.blinky)
+        self.clyde = Clyde(self.clyde_start, self, self.pac)
+        self.pac.pac_state = 'left'
+        self.pac.pac_direction = Vector2(-1, 0)
+        self.ghostList = [self.blinky, self.pinky, self.clyde, self.inky]
+        for ghost in self.ghostList:
+            ghost.mode = 'scatter'
+            ghost.start_mode = pygame.time.get_ticks() + 4150
+
