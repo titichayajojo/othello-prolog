@@ -130,6 +130,7 @@ deleteForRD(X,[H|T], [H|R]):-
 removeDup([],[]).
 removeDup([H|T], [H|R]):-
     deleteForRD(H,T,S),
+    %format( '~w ~w ~w    ~w ~n', [H,T,S,R] ),
     removeDup(S,R).
 
 %find the distance between all nodes and ref position
@@ -138,8 +139,10 @@ findAllDistance(Nodes, Ref, Result):-
 %helper fuction of find distance
 findDist([],_,X,X).
 findDist([H|T], Ref, Res, Result):-
+    %write(H),nl,
     hCost(H,Ref,X),
     append(Res,[[H,X]],Temp),
+    %write(Temp),nl,
     findDist(T,Ref,Temp, Result).
 
 %find heuristic cost using Euclidean Distance
@@ -150,6 +153,7 @@ hCost(node(X1,Y1),node(X2,Y2), Distance):-
     Ypow2 is Y*Y,
     SumXY is Xpow2+Ypow2,
     Distance is sqrt(SumXY).
+    %write(Distance),nl.
 
 %find the min distance from the list of (node,distance)
 minDist([X],X):-!.
@@ -167,5 +171,7 @@ nearestNode( PacPosition, NearestNode ):-
     findall(Y,edge(_,Y,_,_),Allnodes2),
     append(Allnodes1, Allnodes2, AllnodesDup),
     removeDup(AllnodesDup, Allnodes),
+    %write(Allnodes),nl,
     findAllDistance( Allnodes, PacPosition, AllDists),
+    %write(AllDists),nl,
     minDist(AllDists, NearestNode).
