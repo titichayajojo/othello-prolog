@@ -108,9 +108,21 @@ class Game(object):
                             self.redraw_game()
                             if self.pac.life == 0:
                                 self.win = -1
-                        elif self.win == 1 or self.win == -1:
+
+                        elif self.win == -1:
                             self.scene = 'end'
-                    self.draw_score_life()
+                            
+                        elif self.win == 1:
+                            self.scene = 'continue'
+                        self.draw_score_life()
+
+            elif self.scene == 'continue':
+                seconds = (pygame.time.get_ticks() - self.start_ticks) / 1000
+                dying = (pygame.time.get_ticks() - self.start_die) / 1000
+                self.next_level()
+                self.scene = 'playing'
+                self.beginning_sound.play()
+
             elif self.scene == 'end':
                 key = pygame.key.get_pressed()
                 if key[pygame.K_SPACE]:
@@ -487,3 +499,25 @@ class Game(object):
         for ghost in self.ghostList:
             ghost.mode = 'scatter'
             ghost.start_mode = pygame.time.get_ticks() + 4150
+
+    def next_level(self):
+        self.walls = []
+        self.dots = []
+        self.energ = []
+        self.ghost_en = []
+        self.ghost_dec = []
+        self.win = 0
+        self.start_ticks = pygame.time.get_ticks()
+        self.load_elements()
+        self.pac = Pac_Man(self.pac_start,self)
+        self.blinky = Blinky(self.blinky_start, self, self.pac)
+        self.pinky = Pinky(self.pinky_start, self, self.pac)
+        self.inky = Inky(self.inky_start, self, self.pac, self.blinky)
+        self.clyde = Clyde(self.clyde_start, self, self.pac)
+        self.pac.pac_state = 'left'
+        self.pac.pac_direction = Vector2(-1, 0)
+        self.ghostList = [self.blinky, self.pinky, self.clyde, self.inky]
+        for ghost in self.ghostList:
+            ghost.mode = 'scatter'
+            ghost.start_mode = pygame.time.get_ticks() + 4150
+
