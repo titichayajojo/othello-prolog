@@ -44,6 +44,7 @@ class Game(object):
             self.ghost_moveCount = 0
             self.pac_turn = 'left'
             self.win = False
+            self.win_streak = 0
             self.start_die = 0
             self.pacdeathFrame = 0
             self.point = 0
@@ -108,11 +109,14 @@ class Game(object):
                             self.redraw_game()
                             if self.pac.life == 0:
                                 self.win = -1
-
-                        elif self.win == -1:
+                        
+                        elif self.win == -1 or self.win_streak == 5:
                             self.scene = 'end'
+                            if self.win_streak == 5:
+                                self.win = 1
                             
                         elif self.win == 1:
+                            self.win_streak += 1
                             self.scene = 'continue'
                         self.draw_score_life()
 
@@ -438,7 +442,7 @@ class Game(object):
         click = pygame.mouse.get_pressed()
         start_pos = [START_BUT_POS[0] + START_BUT_WIDTH / 2, START_BUT_POS[1] + START_BUT_HEIGHT / 2]
         exit_pos = [EXIT_BUT_POS[0] + EXIT_BUT_WIDTH / 2 + 2, EXIT_BUT_POS[1] + EXIT_BUT_HEIGHT / 2 + 2]
-        self.create_text('by Phurit Warapattanapong', self.window, [360, 635], 8, WHITE, ARC_FONT, True)
+        self.create_text('by JoJo Rit Pun', self.window, [360, 635], 8, WHITE, ARC_FONT, True)
         if START_BUT_POS[0] + START_BUT_WIDTH > mouse[0] > START_BUT_POS[0] and\
                 START_BUT_POS[1] + START_BUT_HEIGHT > mouse[1] > START_BUT_POS[1] :
             pygame.draw.rect(self.window, WHITE,
@@ -484,6 +488,7 @@ class Game(object):
         self.ghost_dec = []
         self.point = 0
         self.win = 0
+        self.win_streak = 0
         self.start_ticks = pygame.time.get_ticks()
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)
