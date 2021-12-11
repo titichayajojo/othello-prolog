@@ -80,15 +80,15 @@ edge(node(18,20),node(21,20),3,east).
 edge(node(21,8),node(21,14),6,south).
 edge(node(21,14),node(21,20),6,south).
 
-opposite(north,south).
-opposite(west,east).
+opposite(south,north).
+opposite(east,west).
 
 move(Origin, Dest,C,D ):-
     edge(Origin,Dest,C,D),!.
 
 move(Origin, Dest,C,D):-
     edge(Dest,Origin,C,D2),
-    opposite(D2,D);opposite(D,D2)
+    opposite(D,D2)
     ,!.
 
 search(Origin, Destination, Cost, Path):-
@@ -96,7 +96,7 @@ search(Origin, Destination, Cost, Path):-
 
 path(Origin, Destination, Cost, [Origin], T):-
     valid(Origin,T),
-    edge(Origin,Destination,Cost,_).
+    move(Origin,Destination,Cost,_).
 
 path(Origin, Destination, Cost, [Origin|Rest], T):-
     valid(Origin,T),
@@ -123,14 +123,13 @@ deleteForRD(X,[X|T],R):-
     deleteForRD(X,T,R).
 
 deleteForRD(X,[H|T], [H|R]):-
-    not(X=H),
+    \+X=H,
     deleteForRD(X,T,R).
 
 %function for removing the duplicate in
 removeDup([],[]).
 removeDup([H|T], [H|R]):-
     deleteForRD(H,T,S),
-    %format( '~w ~w ~w    ~w ~n', [H,T,S,R] ),
     removeDup(S,R).
 
 %find the distance between all nodes and ref position
@@ -139,21 +138,18 @@ findAllDistance(Nodes, Ref, Result):-
 %helper fuction of find distance
 findDist([],_,X,X).
 findDist([H|T], Ref, Res, Result):-
-    %write(H),nl,
-    hCost(H,Ref,X),
+    euclidDist(H,Ref,X),
     append(Res,[[H,X]],Temp),
-    %write(Temp),nl,
     findDist(T,Ref,Temp, Result).
 
 %find heuristic cost using Euclidean Distance
-hCost(node(X1,Y1),node(X2,Y2), Distance):-
+euclidDist(node(X1,Y1),node(X2,Y2), Distance):-
     X is X2-X1,
     Y is Y2-Y1,
     Xpow2 is X*X,
     Ypow2 is Y*Y,
     SumXY is Xpow2+Ypow2,
     Distance is sqrt(SumXY).
-    %write(Distance),nl.
 
 %find the min distance from the list of (node,distance)
 minDist([X],X):-!.
@@ -171,7 +167,31 @@ nearestNode( PacPosition, NearestNode ):-
     findall(Y,edge(_,Y,_,_),Allnodes2),
     append(Allnodes1, Allnodes2, AllnodesDup),
     removeDup(AllnodesDup, Allnodes),
-    %write(Allnodes),nl,
+
     findAllDistance( Allnodes, PacPosition, AllDists),
-    %write(AllDists),nl,
     minDist(AllDists, NearestNode).
+
+ghostmove(InitialDir,GhostNode,PacNode,AllPath):-
+    %nearestNode(PacPos,[PacNode|_]),
+    (opposite(InitialDir,OpposeDir);
+    opposite(OpposeDir,InitialDir)),
+    findall(e(X,Cost),(edge(X,GhostNode,Cost,Dir),Dir\=InitialDir),L1),
+    findall(e(Y,Cost),(edge(GhostNode,Y,Cost,Dir),Dir\=OpposeDir),L2),
+    append(L1,L2,L),
+    findAllPath(L,PacNode,AllPath).
+
+
+findAllPath([],_,[]).
+findAllPath([e(Origin,InitCost)|T],Dest, AllPath):-
+    write(Origin),
+    shortestpath(Origin,Dest,MinC,SPath1),
+    TotalCost is InitCost + MinC,
+    findAllPath(T,Dest,AllPath2),
+    append(AllPath2,[p(SPath1,TotalCost)],AllPath).
+
+minCost([p(Path,Cost)],Path,Cost).
+minCost([p(Path,Cost)|T],Path,Cost):-
+    minCost(T,_,MinCost),
+    Cost =< MinCost,!.
+minCost([_|T],MinPath,MinCost):-
+    minCost(T,MinPath,MinCost).
