@@ -1,9 +1,13 @@
+from pyswip import prolog
+
+
 try:
     from abc import ABC, abstractmethod
     import pygame
     import math as m
     import random
     from constant import *
+    from pyswip import Prolog, Functor, Variable, Query
 except ImportError as i:
     print('File: "ghosts.py" cannot import :', i.name)
 else:
@@ -65,34 +69,44 @@ class Ghost(ABC):
 
     ''' make ghost turn into the fastest direction to the target '''
     def make_decision(self):
-        turns = [Vector2(0,-1), Vector2(-1,0), Vector2(0,1), Vector2(1,0)]
-        dist = []
-        if self.direction == [0,1]:
-            turns.remove([0,-1])
-        elif self.direction == [0,-1]:
-            turns.remove([0,1])
-        elif self.direction == [1,0]:
-            turns.remove([-1,0])
-        elif self.direction == [-1,0]:
-            turns.remove([1,0])
+        # turns = [Vector2(0,-1), Vector2(-1,0), Vector2(0,1), Vector2(1,0)]
+        # dist = []
+        # if self.direction == [0,1]:
+        #     turns.remove([0,-1])
+        # elif self.direction == [0,-1]:
+        #     turns.remove([0,1])
+        # elif self.direction == [1,0]:
+        #     turns.remove([-1,0])
+        # elif self.direction == [-1,0]:
+        #     turns.remove([1,0])
 
-        for d in turns:
-            for wall in self.wall_pos:
-                if self.grid_pos + d == wall:
-                    turns.remove(d)
-                    break
+        # for d in turns:
+        #     for wall in self.wall_pos:
+        #         if self.grid_pos + d == wall:
+        #             turns.remove(d)
+        #             break
 
-        if self.mode == 'frighten':
-            self.direction = random.choice(turns)
-        else:
-            for turn in turns:
-                dist.append(self.find_distance([self.grid_pos[0]+turn[0],self.grid_pos[1] + turn[1]],
-                                               self.target))
-            for i in range(len(dist)):
-                if dist[i] == min(dist):
-                    self.direction = turns[i]
-                    return
+        # if self.mode == 'frighten':
+        #     self.direction = random.choice(turns)
+        # else:
+        #     for turn in turns:
+        #         dist.append(self.find_distance([self.grid_pos[0]+turn[0],self.grid_pos[1] + turn[1]],
+        #                                        self.target))
+        #     for i in range(len(dist)):
+        #         if dist[i] == min(dist):
+        #             self.direction = turns[i]
+        #             return
+        p = Prolog()
+        p.consult("ghost_prolog.pl")
+        # ghostmove = p.query("ghostmove(initdir, ghostnode, pacpos, turn)")
+        ghostmove = Functor("ghostmove")
+        turn = Variable()
 
+        g_node = "node({}, {})".format(self.grid_pos.x, self.grid_pos.y)
+        pac_pos = "node({}, {})".format(self.target.x, self.target.y)
+
+        q = Query(ghostmove(self.direction, g_node, pac_pos, turn))
+                
     def update(self):
         timer = (pygame.time.get_ticks() - self.start_mode) / 1000
 
@@ -277,8 +291,4 @@ class Clyde(Ghost):
                 self.target = self.pac.grid_position
             else:
                 self.target = Vector2(0, 30)
-
-    def __str__(self):
-        return "Clyde"
-
 
