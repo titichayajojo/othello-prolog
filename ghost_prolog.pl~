@@ -171,14 +171,16 @@ nearestNode( PacPosition, NearestNode ):-
     findAllDistance( Allnodes, PacPosition, AllDists),
     minDist(AllDists, NearestNode).
 
-ghostmove(InitialDir,GhostNode,PacNode,AllPath):-
-    %nearestNode(PacPos,[PacNode|_]),
+ghostmove(InitialDir,GhostNode,PacPos,Turn):-
+    nearestNode(PacPos,[PacNode|_]),
     (opposite(InitialDir,OpposeDir);
     opposite(OpposeDir,InitialDir)),
     findall(e(X,Cost),(edge(X,GhostNode,Cost,Dir),Dir\=InitialDir),L1),
     findall(e(Y,Cost),(edge(GhostNode,Y,Cost,Dir),Dir\=OpposeDir),L2),
     append(L1,L2,L),
-    findAllPath(L,PacNode,AllPath).
+    findAllPath(L,PacNode,AllPath),
+    minCost(AllPath,[NextNode|_],_),
+    move(GhostNode,NextNode,_,Turn).
 
 
 findAllPath([],_,[]).
