@@ -80,7 +80,6 @@ class Ghost(ABC):
         if self.mode == 'frighten':
             self.direction = random.choice(turns)
         else:
-            print("here")
             turn = Variable()
 
             prolog = Prolog()
