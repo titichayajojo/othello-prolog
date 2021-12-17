@@ -479,9 +479,11 @@ class Game(object):
     ''' draw score and life under the maze '''
     def draw_score_life(self):
         self.create_text('SCORE: {}'.format(self.point),
-                         self.window, [50, 630], 22, WHITE, ARC_FONT)
+                         self.window, [25, 630], 18, WHITE, ARC_FONT)
+        self.create_text('STAGE: {}'.format(self.win_streak),
+                         self.window, [210, 630], 18, WHITE, ARC_FONT)
         self.create_text('LIFE: {}'.format(self.pac.life),
-                         self.window, [350, 630], 22, FOREST_GREEN, ARC_FONT)
+                         self.window, [400, 630], 18, FOREST_GREEN, ARC_FONT)
 
     ''' restart the game and reset every elements '''
     def restart_game(self):
@@ -518,7 +520,6 @@ class Game(object):
         self.ghost_dec = []
         self.win = 0
         self.played = 0
-
         self.start_ticks = pygame.time.get_ticks()
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)
