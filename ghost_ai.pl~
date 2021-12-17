@@ -1,7 +1,3 @@
-% edges between the decision point on the grids for ghosts
-% edge( originNode(X,Y), destinationNode(X,Y), weight g(n),
-% directionToDestinationNode)
-
 edge(node(1,1), node(6,1), 5, east).
 edge(node(1,1), node(1,5), 4, south).
 edge(node(6,1), node(12,1), 6, east).
@@ -79,58 +75,43 @@ edge(node(18,17),node(18,20),3,south).
 edge(node(18,20),node(21,20),3,east).
 edge(node(21,8),node(21,14),6,south).
 edge(node(21,14),node(21,20),6,south).
+edge(node(13,13),node(12,11),2,north).
+edge(node(14,13),node(15,11),2,north).
 
 opposite(south,north).
 opposite(east,west).
+opposite(north,south).
+opposite(west,east).
 
-move(Origin, Dest,C,D ):-
-    edge(Origin,Dest,C,D),!.
+findTurn(GhostNode,PacPos,InitialDir,NextDir):-
+    nearestNode(PacPos,[Goal|_]),
+    opposite(InitialDir,OpposeDir),
+    findall(e(X,FCost),(edge(X,GhostNode,Cost,Dir),
+                             Dir\=InitialDir,
+                             euclidDist(X,Goal,HCost), %hCost
+                       FCost is HCost+Cost),L1),
+    findall(e(Y,FCost2),(edge(GhostNode,Y,Cost2,Dir),
+                             Dir\=OpposeDir,
+                            euclidDist(Y,Goal,HCost2),
+                              FCost2 is HCost2+Cost2),L2),
+    union(L1,L2,L),
+    minCost(L,MinNode,MinCost),
+    move(GhostNode,MinNode,NextDir),!.
 
-move(Origin, Dest,C,D):-
-    edge(Dest,Origin,C,D2),
-    opposite(D,D2)
-    ,!.
+move(GhostNode,MinNode,NextDir):-
+    edge(GhostNode,MinNode,_,NextDir),!.
+move(GhostNode,MinNode,NextDir):-
+    edge(MinNode,GhostNode,_,ODir)
+    ,opposite(ODir,NextDir),
+    !.
 
-search(Origin, Destination, Cost, Path):-
-    path(Origin, Destination, Cost, Path, []).
+minCost([e(Node,Cost)],Node,Cost).
+minCost([e(Node,Cost)|T],Node,Cost):-
+    minCost(T,_,MinCost),
+    Cost =< MinCost.
+minCost([_|T],MinNode,MinCost):-
+    minCost(T,MinNode,MinCost).
 
-path(Origin, Destination, Cost, [Origin], T):-
-    valid(Origin,T),
-    move(Origin,Destination,Cost,_).
-
-path(Origin, Destination, Cost, [Origin|Rest], T):-
-    valid(Origin,T),
-    move(Origin, Next, C1,_),
-    path(Next, Destination, C2,Rest, [Origin|T]),
-    valid(Origin,Rest),
-    Cost is C1 + C2.
-
-valid(_,[]).
-valid(N,[H|T]):-
-    \+N=H,
-    valid(N,T).
-
-shortestpath(Origin, Destination, MinC, ShortPath):-
-    search(Origin, Destination, MinC, SPath),
-    \+ (search(Origin, Destination, MinC2, SPath2),
-       \+SPath=SPath2,
-       MinC2 =< MinC),
-    append(SPath,[Destination],ShortPath).
-
-%delete function for remove duplicate function
-deleteForRD(_,[],[]).
-deleteForRD(X,[X|T],R):-
-    deleteForRD(X,T,R).
-
-deleteForRD(X,[H|T], [H|R]):-
-    \+X=H,
-    deleteForRD(X,T,R).
-
-%function for removing the duplicate in
-removeDup([],[]).
-removeDup([H|T], [H|R]):-
-    deleteForRD(H,T,S),
-    removeDup(S,R).
 
 %find the distance between all nodes and ref position
 findAllDistance(Nodes, Ref, Result):-
@@ -171,29 +152,16 @@ nearestNode( PacPosition, NearestNode ):-
     findAllDistance( Allnodes, PacPosition, AllDists),
     minDist(AllDists, NearestNode).
 
-ghostmove(InitialDir,GhostNode,PacPos,Turn):-
-    nearestNode(PacPos,[PacNode|_]),
-    (opposite(InitialDir,OpposeDir);
-    opposite(OpposeDir,InitialDir)),
-    findall(e(X,Cost),(edge(X,GhostNode,Cost,Dir),Dir\=InitialDir),L1),
-    findall(e(Y,Cost),(edge(GhostNode,Y,Cost,Dir),Dir\=OpposeDir),L2),
-    append(L1,L2,L),
-    findAllPath(L,PacNode,AllPath),
-    minCost(AllPath,[NextNode|_],_),
-    move(GhostNode,NextNode,_,Turn).
+%function for removing the duplicate in
+removeDup([],[]).
+removeDup([H|T], [H|R]):-
+    deleteForRD(H,T,S),
+    removeDup(S,R).
 
+deleteForRD(_,[],[]).
+deleteForRD(X,[X|T],R):-
+    deleteForRD(X,T,R).
 
-findAllPath([],_,[]).
-findAllPath([e(Origin,InitCost)|T],Dest, AllPath):-
-    write(Origin),
-    shortestpath(Origin,Dest,MinC,SPath1),
-    TotalCost is InitCost + MinC,
-    findAllPath(T,Dest,AllPath2),
-    append(AllPath2,[p(SPath1,TotalCost)],AllPath).
-
-minCost([p(Path,Cost)],Path,Cost).
-minCost([p(Path,Cost)|T],Path,Cost):-
-    minCost(T,_,MinCost),
-    Cost =< MinCost,!.
-minCost([_|T],MinPath,MinCost):-
-    minCost(T,MinPath,MinCost).
+deleteForRD(X,[H|T], [H|R]):-
+    \+X=H,
+    deleteForRD(X,T,R).

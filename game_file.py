@@ -26,6 +26,8 @@ class Game(object):
         self.clyde_start = None
         self.clock = pygame.time.Clock()
         self.clock.tick(FPS)
+        
+
         try:
             self.load_elements()
         except CannotOpenFile as c:
@@ -83,11 +85,14 @@ class Game(object):
                 if seconds <= 4.15 and self.win != -1:
                     if self.played == 0:
                         self.played = 1
+                        self.beginning_sound.play()
                         self.prepare_game()
                 else:
                     if dying <= 2.1:
                         self.redraw_game()
                         self.draw_die()
+                        self.draw_score_life()
+
                     elif dying > 2.1 and dying <= 2.2:
                         self.start_die = 0
                         self.revive()
@@ -512,6 +517,8 @@ class Game(object):
         self.ghost_en = []
         self.ghost_dec = []
         self.win = 0
+        self.played = 0
+
         self.start_ticks = pygame.time.get_ticks()
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)

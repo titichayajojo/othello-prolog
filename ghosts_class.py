@@ -7,8 +7,6 @@ try:
     from pyswip import Prolog, Functor, Variable, Query
 except ImportError as i:
     print('File: "ghosts.py" cannot import :', i.name)
-else:
-    Vector2 = pygame.math.Vector2
 
 class Ghost(ABC):
     def __init__(self, position, game, pac):
@@ -79,17 +77,16 @@ class Ghost(ABC):
 
         if self.mode == 'frighten':
             self.direction = random.choice(turns)
-        else:
-            turn = Variable()
-
+        elif self.in_home != 1:
             prolog = Prolog()
 
-            prolog.consult('ghost_prolog.pl')
+            prolog.consult('ghost_ai.pl')
 
-            g_node = "node({}, {})".format(self.grid_pos.x, self.grid_pos.y)
-            pac_pos = "node({}, {})".format(self.target.x, self.target.y)
+            g_node = "node({}, {})".format(int(self.grid_pos.x), int(self.grid_pos.y))
+            pac_pos = "node({}, {})".format(int(self.target.x), int(self.target.y))
 
-            prolog.query("ghostmove({}, {}, {}, {})".format(self.direction, g_node, pac_pos, turn))
+            result = list(prolog.query("findTurn({}, {}, {}, Turn)".format(g_node, pac_pos, getVector(self.direction))))[0]["Turn"]
+            self.direction = DIRECTIONTOVECTOR[result]
 
 
     def update(self):
