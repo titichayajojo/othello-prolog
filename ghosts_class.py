@@ -4,6 +4,7 @@ try:
     import math as m
     import random
     from constant import *
+    from pyswip import Prolog, Functor, Variable, Query
 except ImportError as i:
     print('File: "ghosts.py" cannot import :', i.name)
 else:
@@ -85,13 +86,17 @@ class Ghost(ABC):
         if self.mode == 'frighten':
             self.direction = random.choice(turns)
         else:
-            for turn in turns:
-                dist.append(self.find_distance([self.grid_pos[0]+turn[0],self.grid_pos[1] + turn[1]],
-                                               self.target))
-            for i in range(len(dist)):
-                if dist[i] == min(dist):
-                    self.direction = turns[i]
-                    return
+            turn = Variable()
+
+            prolog = Prolog()
+
+            prolog.consult('ghost_prolog.pl')
+
+            g_node = "node({}, {})".format(self.grid_pos.x, self.grid_pos.y)
+            pac_pos = "node({}, {})".format(self.target.x, self.target.y)
+
+            prolog.query('ghostmove({}, {}, {}, {})'.format(self.direction, g_node, pac_pos, turn))
+
 
     def update(self):
         timer = (pygame.time.get_ticks() - self.start_mode) / 1000
