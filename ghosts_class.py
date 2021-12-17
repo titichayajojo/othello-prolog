@@ -67,7 +67,7 @@ class Ghost(ABC):
     ''' make ghost turn into the fastest direction to the target '''
     def make_decision(self):
         turns = [Vector2(0,-1), Vector2(-1,0), Vector2(0,1), Vector2(1,0)]
-        dist = []
+    
         if self.direction == [0,1]:
             turns.remove([0,-1])
         elif self.direction == [0,-1]:
@@ -77,15 +77,10 @@ class Ghost(ABC):
         elif self.direction == [-1,0]:
             turns.remove([1,0])
 
-        for d in turns:
-            for wall in self.wall_pos:
-                if self.grid_pos + d == wall:
-                    turns.remove(d)
-                    break
-
         if self.mode == 'frighten':
             self.direction = random.choice(turns)
         else:
+            print("here")
             turn = Variable()
 
             prolog = Prolog()
@@ -95,7 +90,7 @@ class Ghost(ABC):
             g_node = "node({}, {})".format(self.grid_pos.x, self.grid_pos.y)
             pac_pos = "node({}, {})".format(self.target.x, self.target.y)
 
-            prolog.query('ghostmove({}, {}, {}, {})'.format(self.direction, g_node, pac_pos, turn))
+            prolog.query("ghostmove({}, {}, {}, {})".format(self.direction, g_node, pac_pos, turn))
 
 
     def update(self):
