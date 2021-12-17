@@ -83,7 +83,6 @@ class Game(object):
                 if seconds <= 4.15 and self.win != -1:
                     if self.played == 0:
                         self.played = 1
-                        self.beginning_sound.play()
                         self.prepare_game()
                 else:
                     if dying <= 2.1:
@@ -490,6 +489,7 @@ class Game(object):
         self.win = 0
         self.win_streak = 0
         self.start_ticks = pygame.time.get_ticks()
+        self.played = 0
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)
         self.blinky = Blinky(self.blinky_start, self, self.pac)
