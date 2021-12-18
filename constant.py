@@ -1,7 +1,4 @@
-try:
-    import pygame
-except ImportError as i:
-    print('File: "constant.py" cannot import :', i.name)
+import pygame
 
 ''' SCREEN SETTING '''
 WIDTH = 560

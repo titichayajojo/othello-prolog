@@ -1,12 +1,9 @@
-try:
-    from abc import ABC, abstractmethod
-    import pygame
-    import math as m
-    import random
-    from constant import *
-    from pyswip import Prolog, Functor, Variable, Query
-except ImportError as i:
-    print('File: "ghosts.py" cannot import :', i.name)
+from abc import ABC, abstractmethod
+import pygame
+import math as m
+import random
+from constant import *
+from pyswip import Prolog
 
 class Ghost(ABC):
     def __init__(self, position, game, pac):
@@ -24,6 +21,8 @@ class Ghost(ABC):
         self.start_mode = pygame.time.get_ticks()
         self.speed = 2
         self.home_en = self.game.ghost_en
+        self.prolog = Prolog()
+        self.prolog.consult('ghost_ai.pl')
         self.find_target()
 
     ''' get drawing position from grid position '''
@@ -64,28 +63,14 @@ class Ghost(ABC):
 
     ''' make ghost turn into the fastest direction to the target '''
     def make_decision(self):
-        turns = [Vector2(0,-1), Vector2(-1,0), Vector2(0,1), Vector2(1,0)]
-    
-        if self.direction == [0,1]:
-            turns.remove([0,-1])
-        elif self.direction == [0,-1]:
-            turns.remove([0,1])
-        elif self.direction == [1,0]:
-            turns.remove([-1,0])
-        elif self.direction == [-1,0]:
-            turns.remove([1,0])
-
         if self.mode == 'frighten':
-            self.direction = random.choice(turns)
+            self.direction = random.choice([Vector2(0,-1), Vector2(-1,0), Vector2(0,1), Vector2(1,0)])
         elif self.in_home != 1:
-            prolog = Prolog()
-
-            prolog.consult('ghost_ai.pl')
 
             g_node = "node({}, {})".format(int(self.grid_pos.x), int(self.grid_pos.y))
             pac_pos = "node({}, {})".format(int(self.target.x), int(self.target.y))
 
-            result = list(prolog.query("findTurn({}, {}, {}, Turn)".format(g_node, pac_pos, getVector(self.direction))))[0]["Turn"]
+            result = list(self.prolog.query("findTurn({}, {}, {}, Turn)".format(g_node, pac_pos, getVector(self.direction))))[0]["Turn"]
             self.direction = DIRECTIONTOVECTOR[result]
 
 
@@ -183,98 +168,10 @@ class Ghost(ABC):
         pass
 
 
-class Blinky(Ghost):
-    def __init__(self, position, game, pac):
-        super().__init__(position, game, pac)
-        self.direction = Vector2(1,0)
-        self.in_home = 0
-
-    ''' find grid position of the target '''
-    def find_target(self):
-        if self.mode == 'eaten':
-            self.target = Vector2(13,11)
-        # scatter mode : top right corner of the maze
-        elif self.mode == 'scatter':
-            self.target = Vector2(25,0)
-        # chase mode : position of Pac
-        elif self.mode == 'chase':
-            self.target = self.pac.grid_position
-
-    def pac_revive(self, position):
-        super().pac_revive(position)
-        self.in_home = 0
-        self.direction = Vector2(1,0)
-
-    def __str__(self):
-        return "Blinky"
 
 
-class Pinky(Ghost):
-    def __init__(self, position, game, pac):
-        super().__init__(position,game,pac)
-    def find_target(self):
-        if self.mode == 'eaten':
-            self.target = Vector2(13,11)
-        # scatter mode : top left corner of the maze
-        elif self.mode == 'scatter':
-            self.target = Vector2(1,0)
-        # chase mode : four block in front of Pac
-        elif self.mode == 'chase':
-            if self.pac.pac_direction == [0,-1]:
-                self.target = self.pac.grid_position + [-4,-4]
-            else:
-                self.target = Vector2(self.pac.grid_position.x + self.pac.pac_direction.x * 4,
-                                      self.pac.grid_position.y + self.pac.pac_direction.y * 4)
-
-    def __str__(self):
-        return "Pinky"
 
 
-class Inky(Ghost):
-    def __init__(self, position, game, pac, blinky):
-        super().__init__(position,game,pac)
-        self.blink = blinky
 
-    def find_target(self):
-        if self.mode == 'eaten':
-            self.target = Vector2(13,11)
-        # scatter mode : bottom left corner of the maze
-        elif self.mode == 'scatter':
-            self.target = Vector2(27,30)
-        # chase mode : two block in front of the Pac is temporary position
-        #              opposite direction of the temporary position and Blinky position is Inky's target
-        elif self.mode == 'chase':
-            if self.pac.pac_direction == Vector2(0, -1):
-                temp_target = self.pac.grid_position + Vector2(2, 2)
-            else:
-                temp_target = self.pac.grid_position + [self.pac.pac_direction[0] * 2,
-                                                        self.pac.pac_direction[1] * 2]
-            difference = Vector2(abs(self.blink.grid_pos[0] - temp_target[0]), \
-                                 abs(self.blink.grid_pos[1] - temp_target[1]))
-            self.target = temp_target - difference
-
-    def __str__(self):
-        return "Inky"
-
-
-class Clyde(Ghost):
-    def __init__(self, position, game, pac):
-        super().__init__(position,game,pac)
-    def find_target(self):
-        if self.mode == 'eaten':
-            self.target = Vector2(13,11)
-        # scatter mode : bottom left corner of the maze
-        elif self.mode == 'scatter':
-            self.target = Vector2(0,30)
-        # chase mode : if Pac is eight blocks away from Clyde,
-        #               Clyde will target the Pac position
-        elif self.mode == 'chase':
-            if self.find_distance(self.grid_pos, self.pac.grid_position) <= 8:
-                self.target = self.pac.grid_position
-            else:
-                self.target = Vector2(0, 30)
-
-    def __str__(self):
-        return "Clyde"
 
 

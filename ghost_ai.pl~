@@ -95,7 +95,7 @@ findTurn(GhostNode,PacPos,InitialDir,NextDir):-
                             euclidDist(Y,Goal,HCost2),
                               FCost2 is HCost2+Cost2),L2),
     union(L1,L2,L),
-    minCost(L,MinNode,MinCost),
+    minCost(L,MinNode,_),
     move(GhostNode,MinNode,NextDir),!.
 
 move(GhostNode,MinNode,NextDir):-
@@ -165,3 +165,40 @@ deleteForRD(X,[X|T],R):-
 deleteForRD(X,[H|T], [H|R]):-
     \+X=H,
     deleteForRD(X,T,R).
+
+findTarget(_,eaten,_,_,12,11).
+findTarget(blinky,scatter,_,_,25,0).
+findTarget(blinky,chase,node(X,Y),_,X,Y).
+
+findTarget(pinky,scatter,_,_,1,0).
+findTarget(pinky,chase,node(X,Y),[0,-1],X1,Y1):-
+    !,
+    X1 is X-4,
+    Y1 is Y-4.
+findTarget(pinky,chase,node(X,Y),[DX,DY],X1,Y1):-
+    X1 is X+(DX*4),
+    Y1 is Y+(DY*4).
+
+findTarget(clyde,scatter,_,_,0,30).
+findTarget(clyde,chase,ClydePos,node(X,Y),X,Y):-
+    euclidDist(ClydePos,node(X,Y),Dist),
+    Dist =< 8,!.
+findTarget(clyde,chase,_,_,0,30).
+
+findTarget(inky,eaten,_,_,_,12,11).
+findTarget(inky,scatter,_,_,_,27,30).
+findTarget(inky,chase,PacPos,[DX,DY],node(BX,BY),X,Y):-
+    inkyTempTarget(PacPos,[DX,DY],TX,TY),
+    DifX is BX-TX,
+    DifY is BY-TY,
+    X is TX-abs(DifX),
+    Y is TY-abs(DifY).
+
+inkyTempTarget(node(PX,PY),[0,-1],TX,TY):-
+    !,
+    TX is PX + 2,
+    TY is PY + 2.
+inkyTempTarget(node(PX,PY),[DX,DY],TX,TY):-
+    !,
+    TX is PX+(DX*2),
+    TY is PY+(DY*2).
