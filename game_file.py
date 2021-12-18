@@ -1,13 +1,13 @@
-try:
-    import pygame
-    from constant import *
-    from ghosts_class import *
-    from pac_class import *
-except ImportError as ie:
-    print('File: "game_file.py" cannot import :',ie.name)
-else:
-    Vector2 = pygame.math.Vector2
-    pygame.init()
+import pygame
+from constant import *
+from inky import Inky
+from blinky import Blinky
+from pinky import Pinky
+from clyde import  Clyde
+from pac_class import *
+
+Vector2 = pygame.math.Vector2
+pygame.init()
 
 class Game(object):
     def __init__(self):
@@ -24,32 +24,24 @@ class Game(object):
         self.inky_start = None
         self.pinky_start = None
         self.clyde_start = None
+        self.win_streak = 0
         self.clock = pygame.time.Clock()
         self.clock.tick(FPS)
-        try:
-            self.load_elements()
-        except CannotOpenFile as c:
-            print('Cannot open file:',CannotOpenFile.filename)
-            self.running = 0
-        except pygame.error:
-            print(pygame.get_error())
-            self.running = 0
-        else:
-            self.pac = Pac_Man(self.pac_start,self)
-            self.blinky = Blinky(self.blinky_start, self, self.pac)
-            self.pinky = Pinky(self.pinky_start, self, self.pac)
-            self.inky = Inky(self.inky_start, self, self.pac, self.blinky)
-            self.clyde = Clyde(self.clyde_start, self, self.pac)
-            pygame.display.set_icon(self.icon)
-            self.ghost_moveCount = 0
-            self.pac_turn = 'left'
-            self.win = False
-            self.win_streak = 0
-            self.start_die = 0
-            self.pacdeathFrame = 0
-            self.point = 0
-            self.ghostList = [self.blinky, self.pinky, self.inky, self.clyde]
-            self.scene = 'menu'
+        self.load_elements()
+        self.pac = Pac_Man(self.pac_start,self)
+        self.blinky = Blinky(self.blinky_start, self, self.pac)
+        self.pinky = Pinky(self.pinky_start, self, self.pac)
+        self.inky = Inky(self.inky_start, self, self.pac, self.blinky)
+        self.clyde = Clyde(self.clyde_start, self, self.pac)
+        pygame.display.set_icon(self.icon)
+        self.ghost_moveCount = 0
+        self.pac_turn = 'left'
+        self.win = False
+        self.start_die = 0
+        self.pacdeathFrame = 0
+        self.point = 0
+        self.ghostList = [self.blinky, self.pinky, self.inky, self.clyde]
+        self.scene = 'menu'
 
     ''' main game loop '''
     def run(self):
@@ -89,6 +81,8 @@ class Game(object):
                     if dying <= 2.1:
                         self.redraw_game()
                         self.draw_die()
+                        self.draw_score_life()
+
                     elif dying > 2.1 and dying <= 2.2:
                         self.start_die = 0
                         self.revive()
@@ -238,46 +232,6 @@ class Game(object):
             elif self.clyde.direction == Vector2(0, 1):
                 self.window.blit(self.clydeDown[self.ghost_moveCount // 4], self.clyde.pic_pos)
         self.ghost_moveCount += 1
-
-    ''' draw every elements in different grid color '''
-    def draw_grid(self):
-        for x in range (MAZE_WIDTH // GRID_SIZE):
-            pygame.draw.line(self.bg, GREY, (GRID_SIZE * x, 0), (GRID_SIZE * x, MAZE_HEIGHT))
-        for y in range (MAZE_HEIGHT // GRID_SIZE):
-            pygame.draw.line(self.bg, GREY, (0, y * GRID_SIZE), (MAZE_WIDTH, y * GRID_SIZE))
-        for wall in self.walls:
-            pygame.draw.rect(self.bg, LIGHT_BLUE, (wall.x * GRID_SIZE,
-                                                    wall.y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        for dot in self.dots:
-            pygame.draw.rect(self.bg, WHITE, (dot.x * GRID_SIZE,
-                                                    dot.y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        for en in self.energ:
-            pygame.draw.rect(self.bg, GREEN, (en.x * GRID_SIZE,
-                                                    en.y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        for g in self.ghost_en:
-            pygame.draw.rect(self.bg, PURPLE, (g.x * GRID_SIZE,
-                                              g.y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        for d in self.ghost_dec:
-            pygame.draw.rect(self.bg, BLUE, (d.x * GRID_SIZE,d.y * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-
-        pygame.draw.rect(self.window, TURQUOISE, (self.inky.target[0] * GRID_SIZE,
-                                              self.inky.target[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(self.window, RED, (self.blinky.target[0] * GRID_SIZE,
-                                              self.blinky.target[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(self.window, PINK, (self.pinky.target[0] * GRID_SIZE,
-                                              self.pinky.target[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(self.window, ORANGE, (self.clyde.target[0] * GRID_SIZE,
-                                              self.clyde.target[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE))
-        pygame.draw.rect(self.window, TURQUOISE, (self.inky.grid_pos[0] * GRID_SIZE,
-                                                  self.inky.grid_pos[1] * GRID_SIZE, GRID_SIZE,GRID_SIZE))
-        pygame.draw.rect(self.window, RED, (self.blinky.grid_pos[0] * GRID_SIZE,
-                                            self.blinky.grid_pos[1] * GRID_SIZE, GRID_SIZE,GRID_SIZE))
-        pygame.draw.rect(self.window, PINK, (self.pinky.grid_pos[0] * GRID_SIZE,
-                                             self.pinky.grid_pos[1] * GRID_SIZE, GRID_SIZE,GRID_SIZE))
-        pygame.draw.rect(self.window, ORANGE, (self.clyde.grid_pos[0] * GRID_SIZE,
-                                               self.clyde.grid_pos[1] * GRID_SIZE, GRID_SIZE,GRID_SIZE))
-        pygame.draw.rect(self.window, YELLOW, (self.pac.grid_position[0] * GRID_SIZE,
-                                               self.pac.grid_position[1] * GRID_SIZE, GRID_SIZE,GRID_SIZE))
 
     ''' get key press from keyboard '''
     def user_interact(self):
@@ -474,10 +428,12 @@ class Game(object):
 
     ''' draw score and life under the maze '''
     def draw_score_life(self):
-        self.create_text('SCORE: {}'.format(self.point),
-                         self.window, [50, 630], 22, WHITE, ARC_FONT)
-        self.create_text('LIFE: {}'.format(self.pac.life),
-                         self.window, [350, 630], 22, FOREST_GREEN, ARC_FONT)
+        self.create_text('SCORE:{}'.format(self.point),
+                         self.window, [25, 630], 18, WHITE, ARC_FONT)
+        self.create_text('STAGE {}'.format(self.win_streak + 1),
+                         self.window, [250, 630], 18, RED, ARC_FONT)
+        self.create_text('LIFE:{}'.format(self.pac.life),
+                         self.window, [400, 630], 18, FOREST_GREEN, ARC_FONT)
 
     ''' restart the game and reset every elements '''
     def restart_game(self):
@@ -490,6 +446,7 @@ class Game(object):
         self.win = 0
         self.win_streak = 0
         self.start_ticks = pygame.time.get_ticks()
+        self.played = 0
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)
         self.blinky = Blinky(self.blinky_start, self, self.pac)
@@ -512,6 +469,7 @@ class Game(object):
         self.ghost_en = []
         self.ghost_dec = []
         self.win = 0
+        self.played = 0
         self.start_ticks = pygame.time.get_ticks()
         self.load_elements()
         self.pac = Pac_Man(self.pac_start,self)

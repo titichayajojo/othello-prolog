@@ -1,10 +1,5 @@
-try:
-    import pygame
-    from constant import *
-except ImportError as i:
-    print('File: "pac_class.py" cannot import :', i.name)
-else:
-    Vector2 = pygame.math.Vector2
+import pygame
+from constant import *
 
 class Pac_Man(object):
     def __init__(self, position, game):

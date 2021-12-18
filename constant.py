@@ -1,14 +1,11 @@
-try:
-    import pygame
-except ImportError as i:
-    print('File: "constant.py" cannot import :', i.name)
+import pygame
 
 ''' SCREEN SETTING '''
 WIDTH = 560
 HEIGHT = 660
 MAZE_WIDTH = WIDTH
 MAZE_HEIGHT = HEIGHT - 40
-FPS = 20
+FPS = 10
 PAC_SIZE = 30
 GRID_SIZE = 20
 PAC_FONT = 'resources/fonts/PAC-FONT.TTF'
@@ -38,9 +35,19 @@ FOREST_GREEN = (58, 174, 89)
 BRIGHT_GREEN = (88, 204, 119)
 SELECTIVE_YELLOW = (252,185,40)
 MARMALADE = (242, 127,0)
+Vector2 = pygame.math.Vector2
+
+DIRECTIONTOVECTOR = {'north':Vector2(0,-1), 'west':Vector2(-1,0),'south':Vector2(0,1),'east': Vector2(1,0)}
 
 ''' ERROR WHEN THE FILE CANNOT BE OPEN '''
 class CannotOpenFile(FileNotFoundError):
     def __init__(self, filename):
         super().__init__()
         self.filename = filename
+
+def getVector(val):
+    for key, value in DIRECTIONTOVECTOR.items():
+         if val == value:
+             return key
+ 
+    return "key doesn't exist"
