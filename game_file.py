@@ -24,6 +24,7 @@ class Game(object):
         self.inky_start = None
         self.pinky_start = None
         self.clyde_start = None
+        self.win_streak = 0
         self.clock = pygame.time.Clock()
         self.clock.tick(FPS)
         self.load_elements()
@@ -36,7 +37,6 @@ class Game(object):
         self.ghost_moveCount = 0
         self.pac_turn = 'left'
         self.win = False
-        self.win_streak = 0
         self.start_die = 0
         self.pacdeathFrame = 0
         self.point = 0

@@ -23,6 +23,19 @@ class Ghost(ABC):
         self.home_en = self.game.ghost_en
         self.prolog = Prolog()
         self.prolog.consult('ghost_ai.pl')
+        self.chase_count = 0
+        if self.game.win_streak == 0:
+            self.scatter_limit = 7
+            self.chase_limit = 20
+            self.frighten_limit = 10
+        elif self.game.win_streak < 3:
+            self.scatter_limit = 5
+            self.chase_limit = 25
+            self.frighten_limit = 7
+        else:
+            self.scatter_limit = 5
+            self.chase_limit = 35
+            self.frighten_limit = 5
         self.find_target()
 
     ''' get drawing position from grid position '''
@@ -79,15 +92,16 @@ class Ghost(ABC):
 
         ''' change ghost states '''
         if self.mode == 'scatter':
-            if timer >= 7:
+            if timer >= self.scatter_limit:
                 self.change_mode('chase')
+                self.chase_count += 1
 
         elif self.mode == 'chase':
-            if timer >= 20:
+            if timer >= self.chase_limit and self.chase_count <= 2:
                 self.change_mode('scatter')
 
         elif self.mode == 'frighten':
-            if timer >= 10:
+            if timer >= self.frighten_limit:
                 self.change_mode('scatter')
         elif self.mode == 'eaten':
             if self.in_home == 1:
